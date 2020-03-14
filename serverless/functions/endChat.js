@@ -12,9 +12,22 @@ exports.handler = async function (context, event, callback) {
   } // and this will be the Body of the response
 
   response.appendHeader('Content-Type', 'application/json');
+  response.appendHeader('Access-Control-Allow-Origin', '*');
+  response.appendHeader('Access-Control-Allow-Methods', 'OPTIONS POST');
+  response.appendHeader('Access-Control-Allow-Headers', 'Content-Type');
+
 
   // Throwing everything in a try/catch block to handle errors
   try {
+    if (Object.keys(event).length === 0) {
+      // This handles the case where NO parameters were sent, allowing for empty Options request (since we don't have access to the Request method/headers)
+      throw {
+        status: 200,
+        code: 60200,
+        message: "No body sent."
+      }
+    }
+
     if (!event.channelSid) {
       // We're missing our parameter! Throw an exception early.
       throw {
