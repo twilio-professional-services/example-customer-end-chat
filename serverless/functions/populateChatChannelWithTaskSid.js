@@ -42,11 +42,19 @@ exports.handler = async function (context, event, callback) {
       response.setStatusCode(400);
       responseBody.success = false;
       responseBody.payload.errors = [];
+
       if (!event.channelSid) {
-        responseBody.payload.errors.push({message: "Request must include a channelSid"})
+        responseBody.payload.errors.push({
+          code: 60200,
+          message: "Request must include a channelSid"
+        })
       }
+      
       if (!event.taskSid) {
-        responseBody.payload.errors.push({message: "Request must include a taskSid"})
+        responseBody.payload.errors.push({
+          code: 60200,
+          message: "Request must include a taskSid"
+        })
       }
 
     } 
@@ -58,7 +66,7 @@ exports.handler = async function (context, event, callback) {
     
     responseBody.success = false;
     responseBody.payload.errors = responseBody.payload.errors || [];
-    responseBody.payload.errors.push(e.message);
+    responseBody.payload.errors.push({ code: e.code || 500, message: e.message});
   }
 
   response.setBody(responseBody);
