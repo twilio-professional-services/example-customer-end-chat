@@ -5,6 +5,7 @@
   "dependencies": {
     "@twilio/flex-webchat-ui": "^2.0.0",
     "array-findindex-polyfill": "^0.1.0",
+    "axios": "^0.19.2",
     "ie-array-find-polyfill": "^1.1.0",
     "react": "^16.5.2",
     "react-app-polyfill": "^1.0.1",

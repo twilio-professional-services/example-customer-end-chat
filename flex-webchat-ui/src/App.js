@@ -1,21 +1,30 @@
 import React from 'react';
 import * as FlexWebChat from "@twilio/flex-webchat-ui";
+import { EndChat } from "./components/EndChat"
+import { AppConfig } from '@twilio/flex-webchat-ui';
 
 class App extends React.Component {
 
   state = {};
 
   constructor(props) {
+    window.Twilio = {
+      FlexWebChat: FlexWebChat,
+      AppConfig: AppConfig
+    }
     super(props);
-
     const { configuration } = props;
+
     FlexWebChat.Manager.create(configuration)
-      .then(manager => this.setState({ manager }))
-      .catch(error => this.setState({ error }));
+      .then((manager) => {
+        FlexWebChat.MessageInput.Content.add(<EndChat key="end-chat" runtimeDomain={AppConfig.current().runtimeDomain} manager={manager} />, {sortOrder: 1});
+        this.setState({ manager });
+      }).catch(error => this.setState({ error }));
   }
 
   render() {
     const { manager, error } = this.state;
+    
     if (manager) {
       return (
         <FlexWebChat.ContextProvider manager={manager}>
