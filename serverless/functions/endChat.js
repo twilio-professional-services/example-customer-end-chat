@@ -59,7 +59,7 @@ exports.handler = async function (context, event, callback) {
     // Now let's pull the Task
     let task = await client
       .taskrouter
-      .workspaces(context.FLEX_WORKSPACE_SID)
+      .workspaces(context.TWILIO_WORKSPACE_SID)
       .tasks(channelAttributes.taskSid)
       .fetch(); // If this task isn't found, it'll throw a 404 error
 
@@ -95,7 +95,7 @@ exports.handler = async function (context, event, callback) {
     await Promise.all([
       client
         .taskrouter
-        .workspaces(context.FLEX_WORKSPACE_SID)
+        .workspaces(context.TWILIO_WORKSPACE_SID)
         .tasks(channelAttributes.taskSid)
         .update(taskUpdate),
       client
