@@ -105,7 +105,7 @@ The value we're looking for comes after `Domain:` – that's your Runtime Domai
 Now we'll populate the UI configuration variables. Start by renaming the example app configuration file to remove `.example`, then open it in your editor of choice
 
 ```bash
-mv flex-webchat-ui/public/webchat-appConfig.example.js flex-webchat-ui/public/assets/webchat-appConfig.js
+mv flex-webchat-ui/public/assets/webchat-appConfig.example.js flex-webchat-ui/public/assets/webchat-appConfig.js
 
 vim flex-webchat-ui/public/assets/webchat-appConfig.js
 ```
