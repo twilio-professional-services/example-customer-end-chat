@@ -8,23 +8,20 @@ class App extends React.Component {
   state = {};
 
   constructor(props) {
-    window.Twilio = {
-      FlexWebChat: FlexWebChat,
-      AppConfig: AppConfig
-    }
     super(props);
     const { configuration } = props;
 
     FlexWebChat.Manager.create(configuration)
       .then((manager) => {
-        FlexWebChat.MessageInput.Content.add(<EndChat key="end-chat" runtimeDomain={AppConfig.current().runtimeDomain} manager={manager} />, {sortOrder: 1});
+        // Add the EndChat component into FlexWebChat
+        FlexWebChat.MessageInput.Content.add(<EndChat key="end-chat" runtimeDomain={AppConfig.current().runtimeDomain} />, {sortOrder: 1});
         this.setState({ manager });
       }).catch(error => this.setState({ error }));
   }
 
   render() {
     const { manager, error } = this.state;
-    
+
     if (manager) {
       return (
         <FlexWebChat.ContextProvider manager={manager}>
