@@ -13,7 +13,7 @@ Before beginning with this Flex plugin, you'll want to make sure that:
 - You have [Node.js](https://nodejs.org) as well as [`npm`](https://npmjs.com) installed
   - `npm` generally gets installed along with Node.js, but make sure you have it anyway
 - You have the latest [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart) installed
-- Your Twilio CLI is running the latest [Serverless Plugin](https://github.com/twilio-labs/plugin-serverless) 
+- Your Twilio CLI is running the latest [Serverless Plugin](https://github.com/twilio-labs/plugin-serverless)
 
 ### Configuration
 Over the course of the configuration process, you'll need several values from your Twilio account. The first five can be found right now in the Twilio Console and Flex Admin pages, but the last one will require you to deploy your Twilio Functions to find (Don't worry, we'll cover that!)
@@ -93,8 +93,8 @@ Build SID:
 View Live Logs:
    Open the Twilio Console
 Functions:
-   https://foobar-xxx-dev.twilio.io/getWorkerChannels
-   https://foobar-xxx-dev.twilio.io/setWorkerChannelCapacity
+   https://foobar-xxx-dev.twilio.io/endChat
+   https://foobar-xxx-dev.twilio.io/populateChatChannelWithTaskSid
 Assets:
 ```
 
@@ -126,7 +126,32 @@ var appConfig = {
 }
 ```
 
-And now the example is fully configured! You can now run it locally to test and customize it.
+And now the example is fully configured! Now we have one more step: Setting up Studio to use the `populateChatChannelWithTaskSid` Function we deployed earlier.
+
+## Studio Customization
+This is the crucial step: After the chat has been enqueued into TaskRouter/Flex as a new Task, we have to populate our Chat Channel Attributes with the Task SID. To do this:
+
+1. Open [Studio in your Twilio Console](https://www.twilio.com/console/studio/flows/)
+2. Edit the default Webchat Flow that was automatically created when you installed Flex
+3. Drag a new "Run Function" widget onto your flow, below the "SendMessageToFlex" widget
+4. Drag a line from the "SendMessageToFlex" widget's "Task Created" node to the input of your new Run Function widget
+5. Configure your Run Function widget:
+   - Name it something recognizable like "populateChatChannel"
+   - Select the Functions service, by default "customer-end-chat-functions"
+   - Select your dev environment
+   - Select the `populateChatChannelWithTaskSid` Function
+   - Add two Function Parameters:
+     - key: `taskSid`
+       - value: `{{widgets.SendMessageToAgent.sid}}`
+     - key: `channelSid`
+       - value: `{{trigger.message.ChannelSid}}`
+6. Save the Run Function widget
+7. Publish your changes
+
+The end result should look something like this:
+![studio customization](https://github.com/twilio-professional-services/example-customer-end-chat/blob/media/studio-flow.png)
+
+With this studio customization in-place, the entire example should be set up! You can now run it locally to test and customize it.
 
 ## Local Development/Deployment
 
