@@ -36,3 +36,88 @@ Over the course of the configuration process, you'll need several values from yo
 - Serverless Runtime Domain
   - We'll grab this after we've deployed our Twilio Functions
   - A web domain that looks something like "foobar-xxx-dev.twilio.io"
+
+We'll be entering these values into two files, neither of which exist yet:
+- serverless/.env
+- flex-webchat-ui/webchat-appConfig.js
+
+
+#### serverless/.env
+To kick things off, rename the example serverless environment file to remove `.example`, then open it in your editor of choice:
+
+```bash
+mv serverless/.env.example serverless/.env
+
+vim serverless/.env
+```
+
+You'll notice that this file has temporary string variables for your Account Sid, Auth Token, Twilio Workspace SID, and Flex Chat Service SID. Replace these strings with your actual value.
+
+```
+# Before
+ACCOUNT_SID=accountSid
+AUTH_TOKEN=authToken
+TWILIO_WORKSPACE_SID=workspaceSid
+
+# After
+ACCOUNT_SID=AC...
+AUTH_TOKEN=blah...
+TWILIO_WORKSPACE_SID=WS...
+FLEX_CHAT_SERVICE_SID=IS...
+```
+
+#### Deploying Functions
+
+Before we can configure the next file, we'll need to deploy our Twilio Functions and grab the Runtime Domain. To do so, we'll be using the [Twilio CLI](https://www.twilio.com/docs/twilio-cli/quickstart) and the [Serverless Plugin](https://github.com/twilio-labs/plugin-serverless) that you installed as a prerequisiste.
+
+First off, make sure that you have authenticated according to the [Twilio CLI documentation](https://www.twilio.com/docs/twilio-cli/quickstart#login-to-your-twilio-account).
+
+Then cd into the Functions directory and deploy them:
+
+```bash
+cd serverless
+twilio serverless:deploy
+```
+
+Once everything gets deployed, your response should look something like this:
+
+```bash
+Deployment Details
+Domain: foobar-xxx-dev.twilio.io
+Service:
+   plugin-supervisor-capacity-functions (ZS...)
+Environment:
+   dev (ZE...)
+Build SID:
+   ZB...
+View Live Logs:
+   Open the Twilio Console
+Functions:
+   https://foobar-xxx-dev.twilio.io/getWorkerChannels
+   https://foobar-xxx-dev.twilio.io/setWorkerChannelCapacity
+Assets:
+```
+
+The value we're looking for comes after `Domain:` – that's your Runtime Domain.
+
+#### flex-webchat-ui/webchat-appConfig.js
+
+Next, we'll need to configure the app configuration variables for the Twilio Functions. Start by renaming the environment file to remove `.example` and opening it with your editor:
+
+To kick things off, rename the example app configuration file to remove `.example`, then open it in your editor of choice
+
+```bash
+mv flex-webchat-ui/webchat-appConfig.example.js flex-webchat-ui/webchat-appConfig.js
+
+vim public/appConfig.js
+```
+
+You'll notice that this file has temporary string variables for your Account Sid, Flex Flow Sid, and Runtime Domain. Replace these strings with your actual value.
+
+```javascript
+# Before:
+var accountSid = 'accountSid';
+
+# After
+var accountSid = 'AC...';
+```
