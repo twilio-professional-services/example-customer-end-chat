@@ -110,7 +110,7 @@ mv flex-webchat-ui/webchat-appConfig.example.js flex-webchat-ui/webchat-appConfi
 vim lex-webchat-ui/webchat-appConfig.js
 ```
 
-Just like before, this new file contains temporary strings that you simply have to replace with the actual values
+Just like before, this new file contains temporary strings that you simply have to replace with the actual values:
 
 ```javascript
 var appConfig = {
@@ -125,3 +125,23 @@ var appConfig = {
     }
 }
 ```
+
+And now the example is fully configured! You can now run it locally to test and customize it.
+
+## Local Development/Deployment
+
+In order to develop locally, you can use the Webpack Dev Server by running:
+
+```bash
+cd flex-webchat-ui
+npm install
+npm start
+```
+
+This will automatically start up the Webpack Dev Server and open the browser for you. Your app will run on `http://localhost:8081`. If you want to change that you can do this by setting the `PORT` environment variable:
+
+```bash
+PORT=3000 npm start
+```
+
+When you make changes to your code, the browser window will be automatically refreshed.
