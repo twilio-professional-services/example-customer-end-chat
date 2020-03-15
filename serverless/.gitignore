@@ -115,5 +115,4 @@ dist
 .pnp.*
 
 # Twilio Functions config
-
-.twilio-functions 
+.twilio-functions
