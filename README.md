@@ -39,7 +39,7 @@ Over the course of the configuration process, you'll need several values from yo
 
 We'll be entering these values into two files, neither of which exist yet:
 - serverless/.env
-- flex-webchat-ui/webchat-appConfig.js
+- flex-webchat-ui/public/assets/webchat-appConfig.js
 
 
 #### serverless/.env
@@ -100,14 +100,14 @@ Assets:
 
 The value we're looking for comes after `Domain:` – that's your Runtime Domain.
 
-#### flex-webchat-ui/webchat-appConfig.js
+#### flex-webchat-ui/public/assets/webchat-appConfig.js
 
 Now we'll populate the UI configuration variables. Start by renaming the example app configuration file to remove `.example`, then open it in your editor of choice
 
 ```bash
-mv flex-webchat-ui/webchat-appConfig.example.js flex-webchat-ui/webchat-appConfig.js
+mv flex-webchat-ui/public/webchat-appConfig.example.js flex-webchat-ui/public/assets/webchat-appConfig.js
 
-vim lex-webchat-ui/webchat-appConfig.js
+vim flex-webchat-ui/public/assets/webchat-appConfig.js
 ```
 
 Just like before, this new file contains temporary strings that you simply have to replace with the actual values:
