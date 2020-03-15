@@ -5,6 +5,17 @@ This example adds _End Chat_ capability into the customer-facing [Twilio Flex](h
 
 ![customer-end-chat example](https://github.com/twilio-professional-services/example-customer-end-chat/blob/media/customer-end-chat.gif)
 
+## How it Works
+The goal here is to create a React Component in flex-webchat-ui that is capable of ending its own chat channel. In order to accomplish this, that component is going to hit a Twilio Function, `endChat` with the Chat Channel SID. However: The `endChat` Function must _also_ complete the Flex/TaskRouter Task, so it will need its SID. Since there's no easy way to look that up, we start off by populating the taskSid into our Chat Channel's attributes via Studio and the `populateChatChannelWithTaskSid` Twilio Function. Here's how that looks in order of time:
+
+1. Customer types a message, which kicks off the Studio flow
+2. Studio enqueues a new Task into TaskRouter
+3. Once the Task is created, Studio runs the `populateChatChannelWithTaskSid` Function
+4. `populateChatChannelWithTaskSid` adds the taskSid into the chat channel's attributes
+5. When the customer closes their chat window, the new React Component calls the `endChat` Twilio Function
+6. `endChat` sets the Chat Channel to "INACTIVE" and completes the Task
+
+
 ## Setup
 
 ### Prerequisites
