@@ -102,22 +102,26 @@ The value we're looking for comes after `Domain:` – that's your Runtime Domai
 
 #### flex-webchat-ui/webchat-appConfig.js
 
-Next, we'll need to configure the app configuration variables for the Twilio Functions. Start by renaming the environment file to remove `.example` and opening it with your editor:
-
-To kick things off, rename the example app configuration file to remove `.example`, then open it in your editor of choice
+Now we'll populate the UI configuration variables. Start by renaming the example app configuration file to remove `.example`, then open it in your editor of choice
 
 ```bash
 mv flex-webchat-ui/webchat-appConfig.example.js flex-webchat-ui/webchat-appConfig.js
 
-vim public/appConfig.js
+vim lex-webchat-ui/webchat-appConfig.js
 ```
 
-You'll notice that this file has temporary string variables for your Account Sid, Flex Flow Sid, and Runtime Domain. Replace these strings with your actual value.
+Just like before, this new file contains temporary strings that you simply have to replace with the actual values
 
 ```javascript
-# Before:
-var accountSid = 'accountSid';
-
-# After
-var accountSid = 'AC...';
+var appConfig = {
+    // change to your AccountSid
+    accountSid: "AC...",
+    // change to your Flex Flow SID
+    flexFlowSid: "FO...",
+    // change to your runtimeDomain
+    runtimeDomain: "http...",
+    colorTheme: {
+        overrides: brandedColors
+    }
+}
 ```
