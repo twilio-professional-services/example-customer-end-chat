@@ -1,9 +1,9 @@
 var appConfig = {
-    //  change the your AccountSid
+    // change to your AccountSid
     accountSid: "AC...",
     // change to your Flex Flow SID
     flexFlowSid: "FO...",
-    // change to your runtimeDomain
+    // change to your Functions Runtime Domain
     runtimeDomain: "http...",
     colorTheme: {
         overrides: brandedColors
