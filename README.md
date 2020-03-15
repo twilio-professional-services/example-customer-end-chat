@@ -141,7 +141,7 @@ var appConfig = {
 
 And now the example is fully configured! Now we have one more step: Setting up Studio to use the `populateChatChannelWithTaskSid` Function we deployed earlier.
 
-## Studio Customization
+### Studio Customization
 This is the crucial step: After the chat has been enqueued into TaskRouter/Flex as a new Task, we have to populate our Chat Channel Attributes with the Task SID. To do this:
 
 1. Open [Studio in your Twilio Console](https://www.twilio.com/console/studio/flows/)
