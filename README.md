@@ -4,6 +4,7 @@
 This example adds _End Chat_ capability into the customer-facing [Twilio Flex](http://twilio.com/flex) [Webchat UI](https://www.twilio.com/docs/flex/installing-and-using-flex-webchat). It includes code for [Twilio Functions](https://www.twilio.com/docs/runtime/functions) (found in the `serverless` directory) as well as frontend UI code built atop Twilio's [Flex Webchat UI Sample](https://github.com/twilio/flex-webchat-ui-sample) (found in the `flex-webchat-ui` directory).
 
 ![customer-end-chat example](https://github.com/twilio-professional-services/example-customer-end-chat/blob/media/customer-end-chat.gif)
+_clicking the X closes the window, which ends the chat_
 
 ## How it Works
 The goal here is to create a React Component in flex-webchat-ui that is capable of ending its own chat channel. In order to accomplish this, that component is going to hit a Twilio Function, `endChat`, with the Chat Channel SID.
