@@ -37,7 +37,10 @@ exports.handler = async function (context, event, callback) {
       }
     }
 
-    // First pull the Channel via the Twililo SDK
+    // Build our updates array for Promise handling
+    let updatePromises = [];
+
+    // First pull the Channel via the Twilio SDK
     let channel = await client
       .chat
       .services(chatServiceSid)
@@ -47,68 +50,73 @@ exports.handler = async function (context, event, callback) {
     // if channel.attributes fails to parse, it'll throw a SyntaxError
     let channelAttributes = JSON.parse(channel.attributes);
 
-    if (!channelAttributes.taskSid) {
-      // We're missing our taskSid! Throw an exception early.
-      throw {
-        status: 500,
-        code: 60200,
-        message: "Chat Channel attributes not populated with TaskSid!"
-      }
-    }
-    
-    // Now let's pull the Task
-    let task = await client
-      .taskrouter
-      .workspaces(context.TWILIO_WORKSPACE_SID)
-      .tasks(channelAttributes.taskSid)
-      .fetch(); // If this task isn't found, it'll throw a 404 error
 
-    if (["canceled", "completed", "wrapping",].includes(task.assignmentStatus)) {
-      // This task is already complete! Probably some sort of race condition, but throw a 200 status since that's what we were here do to anyway
-      throw({
-        status: 200,
-        code: 45007,
-        message: `Task SID ${channelAttributes.taskSid} is already in ${task.assignmentStatus} state.`
-      });
-    }
-
-    // We're going to update both the Chat Channel and the Task, so let's build our updates first
+    // Build the update object for the Chat Channel
     channelAttributes.status = "INACTIVE";
     let channelUpdate = {
       attributes: JSON.stringify(channelAttributes)
     }; // All we need to do for the Chat Channel is set 'status' to 'INACTIVE'
 
-    let taskUpdate = {
-      assignmentStatus: task.assignmentStatus
-    }
-    switch (task.assignmentStatus) {
-      case 'pending':
-      case 'reserved':
-        taskUpdate.assignmentStatus = "canceled";
-        taskUpdate.reason = 'Customer ended chat.';
-        break;
-      case 'assigned':
-        taskUpdate.assignmentStatus = "wrapping";
-    } // Move the Task into either the "canceled" or "wrapping" state, depending on its previous state
-    
-    // Finally we perform our Task and Channel updates
-    await Promise.all([
-      client
+    // and add the update to our promises array
+    updatePromises.push(client
+      .chat
+      .services(chatServiceSid)
+      .channels(event.channelSid)
+      .update(channelUpdate));
+
+    // There are several cases where we may not have a taskSid populated – it is
+    // the /expected/ case at any time before we enqueue in TaskRouter, but
+    // could also mean that the populateChatChannelWithTaskSid function is
+    // improperly implemented/configured if it happens after enqueuing. Because
+    // of this, we must allow for this state without error but we'll print a
+    // warning message to help with troubleshooting.
+    if (channelAttributes.taskSid) {
+      console.warn("No task sid on chat channel attribtues – this may be fine, but if things aren't working correctly, check your populateChatChannelWithTaskSid function.")
+      // Now let's pull the Task
+      let task = await client
         .taskrouter
         .workspaces(context.TWILIO_WORKSPACE_SID)
         .tasks(channelAttributes.taskSid)
-        .update(taskUpdate),
-      client
-        .chat
-        .services(chatServiceSid)
-        .channels(event.channelSid)
-        .update(channelUpdate)
-    ]);
+        .fetch(); // If this task isn't found, it'll throw a 404 error
+
+      if (["canceled", "completed", "wrapping",].includes(task.assignmentStatus)) {
+        // This task is already complete! Probably some sort of race condition, but throw a 200 status since that's what we were here do to anyway
+        throw ({
+          status: 200,
+          code: 45007,
+          message: `Task SID ${channelAttributes.taskSid} is already in ${task.assignmentStatus} state.`
+        });
+      }
+
+      // Build the update object for the Task
+      let taskUpdate = {
+        assignmentStatus: task.assignmentStatus
+      }
+      switch (task.assignmentStatus) {
+        case 'pending':
+        case 'reserved':
+          taskUpdate.assignmentStatus = "canceled";
+          taskUpdate.reason = 'Customer ended chat.';
+          break;
+        case 'assigned':
+          taskUpdate.assignmentStatus = "wrapping";
+      } // Move the Task into either the "canceled" or "wrapping" state, depending on its previous state
+
+      // and add the update to our promises array
+      updatePromises.push(client
+        .taskrouter
+        .workspaces(context.TWILIO_WORKSPACE_SID)
+        .tasks(channelAttributes.taskSid)
+        .update(taskUpdate));
+    }
+
+    // Now ensure that all promises return successful
+    await Promise.all(updatePromises);
     responseBody.success = true;
     responseBody.payload.message = "Chat ended."
   } catch (e) {
     // We've caught an error! Handle the HTTP error response
-    console.error(e);
+    console.error(e.message || e);
 
     response.setStatusCode(e.status || 500);
 
