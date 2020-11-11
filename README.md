@@ -185,3 +185,6 @@ PORT=3000 npm start
 ```
 
 When you make changes to your code, the browser window will be automatically refreshed.
+
+## Disclaimer
+This software is to be considered "sample code", a Type B Deliverable, and is delivered "as-is" to the user. Twilio bears no responsibility to support the use or implementation of this software.
