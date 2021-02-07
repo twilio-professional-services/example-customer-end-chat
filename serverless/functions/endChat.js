@@ -70,8 +70,10 @@ exports.handler = async function (context, event, callback) {
     // improperly implemented/configured if it happens after enqueuing. Because
     // of this, we must allow for this state without error but we'll print a
     // warning message to help with troubleshooting.
-    if (channelAttributes.taskSid) {
+    if (!channelAttributes.taskSid) {
       console.warn("No task sid on chat channel attribtues – this may be fine, but if things aren't working correctly, check your populateChatChannelWithTaskSid function.")
+
+    } else {
       // Now let's pull the Task
       let task = await client
         .taskrouter
